@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mental Health Assistant</title>
+<style>
+    :root {
+        --primary: #4A90E2;
+        --secondary: #007bff;
+        --danger: #e74c3c;
+        --success: #2ecc71;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --text: #333;
+        --text-light: #6c757d;
+        --shadow: 0 4px 15px rgba(0,0,0,0.1);
+        --radius: 12px;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: var(--text);
+        background: linear-gradient(135deg, #eef2f3 0%, #d9e4f5 100%);
+        min-height: 100vh;
+    }
+
+    /* LOGIN PAGE */
+    #loginPage {
+        display: flex;
+        min-height: 100vh;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .login-box {
+        background: white;
+        padding: 30px;
+        border-radius: var(--radius);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        box-shadow: var(--shadow);
+    }
+    
+    .login-box h2 {
+        margin-bottom: 20px;
+        color: var(--primary);
+    }
+    
+    .login-box input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: border 0.3s;
+    }
+    
+    .login-box input:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+    
+    .login-box button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.3s;
+    }
+    
+    .login-box button:hover {
+        background: #3a7bc8;
+    }
+
+    /* MAIN APP */
+    #mainApp {
+        display: none;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .app-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .app-header h1 {
+        color: var(--primary);
+        margin: 0;
+    }
+
+    #logoutBtn {
+        background: var(--danger);
+        padding: 10px 20px;
+        border-radius: 8px;
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s;
+        white-space: nowrap;
+    }
+    
+    #logoutBtn:hover {
+        background: #c0392b;
+    }
+
+    .app-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+        .app-container {
+            grid-template-columns: 1fr 1fr;
+        }
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .card h2 {
+        margin-bottom: 15px;
+        color: var(--primary);
+    }
+
+    select, textarea, button {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-size: 15px;
+        transition: border 0.3s;
+    }
+
+    select:focus, textarea:focus {
+        border-color: var(--primary);
+        outline: none;
+    }
+
+    .btn-primary {
+        background: var(--secondary);
+        color: white;
+        border: none;
+        cursor: pointer;
+        transition: background 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background: #0069d9;
+    }
+
+    .result-box {
+        margin-top: 20px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .symptom-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .symptom-item {
+        padding: 10px;
+        background: var(--light);
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        border: 1px solid transparent;
+    }
+    
+    .symptom-item:hover {
+        background: #e9ecef;
+        transform: translateY(-2px);
+    }
+    
+    .symptom-item.active {
+        background: var(--primary);
+        color: white;
+    }
+
+    .emergency-section {
+        background: #fff5f5;
+        border-left: 4px solid var(--danger);
+    }
+
+    .emergency-section h3 {
+        color: var(--danger);
+    }
+
+    .emergency-contacts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .emergency-contact {
+        padding: 10px 15px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        flex: 1;
+        min-width: 150px;
+        text-align: center;
+    }
+
+    .history-item {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    
+    .history-item:last-child {
+        border-bottom: none;
+    }
+
+    .history-date {
+        font-size: 0.8rem;
+        color: var(--text-light);
+    }
+
+    .loader {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .loader-spinner {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid var(--primary);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: var(--success);
+        color: white;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        display: none;
+        z-index: 1000;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --light: #343a40;
+            --dark: #f8f9fa;
+            --text: #f8f9fa;
+            --text-light: #adb5bd;
+        }
+
+        body {
+            background: linear-gradient(135deg, #212529 0%, #343a40 100%);
+        }
+
+        .card, .login-box, .result-box {
+            background: #495057;
+            color: var(--text);
+        }
+
+        select, textarea, input {
+            background: #6c757d;
+            color: var(--text);
+            border-color: #495057;
+        }
+
+        .symptom-item {
+            background: #6c757d;
+        }
+
+        .symptom-item:hover {
+            background: #5a6268;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+    <div class="login-box">
+        <h2>Mental Health Assistant</h2>
+        <p style="margin-bottom: 20px; color: var(--text-light);">Please login to continue</p>
+        <input type="text" id="username" placeholder="Enter Your Name" />
+        <input type="password" id="password" placeholder="Enter Password" />
+        <button onclick="login()">Login</button>
+        <p style="color:var(--danger); display:none; margin-top: 10px;" id="loginError">Invalid name or password!</p>
+        <p style="margin-top: 15px; font-size: 0.9rem; color: var(--text-light);">
+            Demo credentials: user / 1234
+        </p>
+    </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp">
+    <div class="app-header">
+        <h1>Mental Health Assistant</h1>
+        <button id="logoutBtn" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="app-container">
+        <div class="card">
+            <h2>How are you feeling today?</h2>
+            <p>Select your symptoms from the list below:</p>
+            
+            <div class="symptom-grid" id="symptomGrid">
+                <!-- Symptoms will be populated by JavaScript -->
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <label for="problemSelect">Or select from dropdown:</label>
+                <select id="problemSelect">
+                    <option value="">-- Select a symptom --</option>
+                    <!-- Options will be populated by JavaScript -->
+                </select>
+            </div>
+            
+            <button class="btn-primary" onclick="getSuggestion()">Get Suggestion</button>
+            
+            <div class="loader" id="loader">
+                <div class="loader-spinner"></div>
+                <p>Analyzing your symptoms...</p>
+            </div>
+            
+            <div id="result" class="result-box"></div>
+        </div>
+        
+        <div>
+            <div class="card">
+                <h2>Your Health History</h2>
+                <div id="historyList">
+                    <!-- History items will be added here -->
+                </div>
+                <button class="btn-primary" onclick="clearHistory()" style="margin-top: 15px;">Clear History</button>
+            </div>
+            
+            <div class="card emergency-section">
+                <h3>Emergency Contacts</h3>
+                <p>If you're experiencing a mental health crisis, please contact:</p>
+                <div class="emergency-contacts">
+                    <div class="emergency-contact">
+                        <strong>National Helpline</strong>
+                        <p>1-800-273-8255</p>
+                    </div>
+                    <div class="emergency-contact">
+                        <strong>Crisis Text Line</strong>
+                        <p>Text HOME to 741741</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="notification" id="notification"></div>
+
+<script>
+    // Enhanced symptom data with categories
+    const symptoms = [
+        { id: 1, name: "মাথা ব্যথা", category: "physical" },
+        { id: 2, name: "ঘুম কম হওয়া", category: "sleep" },
+        { id: 3, name: "বুক ধড়ফড়", category: "physical" },
+        { id: 4, name: "চোখে ঝাপসা দেখা", category: "physical" },
+        { id: 5, name: "গ্যাস/অম্বল", category: "physical" },
+        { id: 6, name: "মেজাজ খারাপ", category: "emotional" },
+        { id: 7, name: "দুশ্চিন্তা বেশি", category: "emotional" },
+        { id: 8, name: "চাপ বেশি লাগা", category: "emotional" },
+        { id: 9, name: "ক্লান্তি", category: "physical" },
+        { id: 10, name: "বমি বমি ভাব", category: "physical" },
+        { id: 11, name: "সর্দি", category: "physical" },
+        { id: 12, name: "কাশি", category: "physical" },
+        { id: 13, name: "জ্বর", category: "physical" },
+        { id: 14, name: "মাথা ঘোরা", category: "physical" },
+        { id: 15, name: "মাংসপেশীর ব্যথা", category: "physical" },
+        { id: 16, name: "চুল পড়া", category: "physical" },
+        { id: 17, name: "চাপা ব্যথা", category: "physical" },
+        { id: 18, name: "কম এনার্জি", category: "physical" },
+        { id: 19, name: "ইমোশনাল ডিস্ট্রেস", category: "emotional" }
+    ];
+
+    // Enhanced suggestions with more details
+    const suggestions = {
+        "মাথা ব্যথা": {
+            advice: "১টি Napa 500mg নিন + পানি বেশি পান করুন + বিশ্রাম নিন।",
+            severity: "moderate",
+            selfCare: "কম আলোয় বিশ্রাম নিন, মাথায় ঠান্ডা সেক দিন।",
+            whenToSeeDoctor: "যদি ২৪ ঘন্টার বেশি সময় ধরে ব্যথা থাকে বা তীব্রতা বাড়ে"
+        },
+        "ঘুম কম হওয়া": {
+            advice: "ঘুমানোর ৩০ মিনিট আগে স্ক্রিন বন্ধ করুন ও গরম দুধ খান।",
+            severity: "mild",
+            selfCare: "নিয়মিত সময়ে ঘুমাতে যান, ক্যাফেইন এড়িয়ে চলুন।",
+            whenToSeeDoctor: "যদি এক সপ্তাহের বেশি সময় ধরে অনিদ্রা চলতে থাকে"
+        },
+        "বুক ধড়ফড়": {
+            advice: "গভীর শ্বাস নিন, ৩ মিনিট চোখ বন্ধ করে আরাম করুন।",
+            severity: "moderate",
+            selfCare: "শান্ত পরিবেশে বসুন, ধীরে ধীরে শ্বাস নিন ও ছাড়ুন।",
+            whenToSeeDoctor: "যদি বুক ধড়ফড়ার সাথে ব্যথা বা শ্বাসকষ্ট হয়"
+        },
+        "চোখে ঝাপসা দেখা": {
+            advice: "চোখ ধুয়ে নিন, ১৫ মিনিট স্ক্রিন ব্রেক নিন।",
+            severity: "mild",
+            selfCare: "চোখের ব্যায়াম করুন, পর্যাপ্ত আলোতে কাজ করুন।",
+            whenToSeeDoctor: "যদি ঝাপসা দেখা দীর্ঘস্থায়ী হয় বা হঠাৎ করে খারাপ হয়"
+        },
+        "গ্যাস/অম্বল": {
+            advice: "Eno নিতে পারেন বা গরম পানি খান।",
+            severity: "mild",
+            selfCare: "মসলাযুক্ত ও তৈলাক্ত খাবার এড়িয়ে চলুন, ছোট ছোট খাবার খান।",
+            whenToSeeDoctor: "যদি এক সপ্তাহের বেশি সময় ধরে সমস্যা থাকে"
+        },
+        "মেজাজ খারাপ": {
+            advice: "৫ মিনিট হাঁটুন, পানি পান করুন, গভীর শ্বাস নিন।",
+            severity: "mild",
+            selfCare: "প্রিয় সঙ্গীর সাথে কথা বলুন, হালকা ব্যায়াম করুন।",
+            whenToSeeDoctor: "যদি মেজাজের পরিবর্তন দৈনন্দিন জীবনকে প্রভাবিত করে"
+        },
+        "দুশ্চিন্তা বেশি": {
+            advice: "৩ মিনিট 'Mindful Breathing' করুন।",
+            severity: "moderate",
+            selfCare: "দুশ্চিন্তার কারণ লিখে ফেলুন, ধ্যান বা যোগব্যায়াম করুন।",
+            whenToSeeDoctor: "যদি দুশ্চিন্তা নিয়ন্ত্রণের বাইরে চলে যায়"
+        },
+        "চাপ বেশি লাগা": {
+            advice: "বিরতি নিন, হালকা স্ট্রেচিং করুন, প্রিয় গান শুনুন।",
+            severity: "moderate",
+            selfCare: "টাস্কগুলো ছোট ছোট অংশে ভাগ করুন, সময় ব্যবস্থাপনা করুন।",
+            whenToSeeDoctor: "যদি স্ট্রেস দৈনন্দিন কাজকর্মে বাধা সৃষ্টি করে"
+        },
+        "ক্লান্তি": {
+            advice: "১০ মিনিট বিশ্রাম নিন এবং পানি পান করুন।",
+            severity: "mild",
+            selfCare: "পর্যাপ্ত ঘুমান, পুষ্টিকর খাবার খান, হালকা ব্যায়াম করুন।",
+            whenToSeeDoctor: "যদি ক্লান্তি দীর্ঘস্থায়ী হয় বা অন্যান্য লক্ষণের সাথে থাকে"
+        },
+        "বমি বমি ভাব": {
+            advice: "এডভিল বা পেপ্টো বিসমল নিন, আদা চা পান করুন।",
+            severity: "moderate",
+            selfCare: "হালকা খাবার খান, শুয়ে থাকুন, তীব্র গন্ধ এড়িয়ে চলুন।",
+            whenToSeeDoctor: "যদি ২৪ ঘন্টার বেশি সময় ধরে বমি বমি ভাব থাকে"
+        },
+        "সর্দি": {
+            advice: "গরম পানি খান এবং ভাপ নিন।",
+            severity: "mild",
+            selfCare: "পর্যাপ্ত পরিমাণে তরল পান করুন, বিশ্রাম নিন।",
+            whenToSeeDoctor: "যদি জ্বর হয় বা লক্ষণগুলো ১০ দিনের বেশি স্থায়ী হয়"
+        },
+        "কাশি": {
+            advice: "বাষ্প নিন + গরম পানি/মধু খান।",
+            severity: "mild",
+            selfCare: "গরম পানিতে লবণ দিয়ে গার্গল করুন, হিউমিডিফায়ার ব্যবহার করুন।",
+            whenToSeeDoctor: "যদি কাশি তিন সপ্তাহের বেশি স্থায়ী হয় বা রক্ত বের হয়"
+        },
+        "জ্বর": {
+            advice: "১টি Napa 500mg নিন + বিশ্রাম নিন।",
+            severity: "moderate",
+            selfCare: "পর্যাপ্ত তরল পান করুন, হালকা কাপড় পরুন।",
+            whenToSeeDoctor: "যদি জ্বর ১০৩°F (৩৯.৪°C) এর বেশি হয় বা তিন দিনের বেশি স্থায়ী হয়"
+        },
+        "মাথা ঘোরা": {
+            advice: "শুয়ে পড়ুন, ধীরে ধীরে উঠুন, পানি পান করুন।",
+            severity: "moderate",
+            selfCare: "হঠাৎ করে মাথা না ঘোরান, পর্যাপ্ত পানি পান করুন।",
+            whenToSeeDoctor: "যদি মাথা ঘোরা বারবার হয় বা পড়ে যাওয়ার ঝুঁকি থাকে"
+        },
+        "মাংসপেশীর ব্যথা": {
+            advice: "হালকা স্ট্রেচিং করুন, বরফ সেক দিন।",
+            severity: "mild",
+            selfCare: "গরম সেক দিন, হালকা মালিশ করুন, বিশ্রাম নিন।",
+            whenToSeeDoctor: "যদি ব্যথা তীব্র হয় বা এক সপ্তাহের বেশি স্থায়ী হয়"
+        },
+        "চুল পড়া": {
+            advice: "পুষ্টিকর খাবার খান, চাপ কম রাখুন।",
+            severity: "mild",
+            selfCare: "ভিটামিন ই সমৃদ্ধ তেল ব্যবহার করুন, মাথার ত্বক মালিশ করুন।",
+            whenToSeeDoctor: "যদি চুল পড়া হঠাৎ করে বেড়ে যায় বা প্যাচ করে পড়ে"
+        },
+        "চাপা ব্যথা": {
+            advice: "হালকা ব্যায়াম করুন, গরম সেক দিন।",
+            severity: "mild",
+            selfCare: "ভালো ভঙ্গিতে বসুন ও দাঁড়ান, নিয়মিত স্ট্রেচিং করুন।",
+            whenToSeeDoctor: "যদি ব্যথা তীব্র হয় বা দৈনন্দিন কাজকর্মে বাধা সৃষ্টি করে"
+        },
+        "কম এনার্জি": {
+            advice: "হালকা ব্যায়াম করুন, পর্যাপ্ত পানি পান করুন।",
+            severity: "mild",
+            selfCare: "স্বাস্থ্যকর খাবার খান, পর্যাপ্ত ঘুমান, ক্যাফেইন কমিয়ে দিন।",
+            whenToSeeDoctor: "যদি ক্লান্তি দীর্ঘস্থায়ী হয় বা অন্যান্য লক্ষণের সাথে থাকে"
+        },
+        "ইমোশনাল ডিস্ট্রেস": {
+            advice: "বন্ধু বা পরিবারের সাথে কথা বলুন, শখের কাজ করুন।",
+            severity: "moderate",
+            selfCare: "নিজের যত্ন নিন, জার্নালিং করুন, প্রকৃতির সাথে সময় কাটান।",
+            whenToSeeDoctor: "যদি মানসিক সংকট দৈনন্দিন জীবনযাপনে বাধা সৃষ্টি করে"
+        }
+    };
+
+    // Initialize the application
+    document.addEventListener("DOMContentLoaded", function() {
+        const savedUser = localStorage.getItem("loggedInUser");
+        if (savedUser) {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            loadUserData();
+        }
+        
+        // Populate symptoms in the grid and dropdown
+        populateSymptoms();
+        
+        // Load user history
+        loadHistory();
+    });
+
+    // Populate symptoms in both grid and dropdown
+    function populateSymptoms() {
+        const symptomGrid = document.getElementById("symptomGrid");
+        const problemSelect = document.getElementById("problemSelect");
+        
+        // Clear existing options (except the first one)
+        while (problemSelect.options.length > 1) {
+            problemSelect.remove(1);
+        }
+        
+        symptomGrid.innerHTML = "";
+        
+        symptoms.forEach(symptom => {
+            // Add to grid
+            const symptomItem = document.createElement("div");
+            symptomItem.className = "symptom-item";
+            symptomItem.textContent = symptom.name;
+            symptomItem.setAttribute("data-id", symptom.id);
+            symptomItem.addEventListener("click", function() {
+                // Toggle active state
+                document.querySelectorAll(".symptom-item").forEach(item => {
+                    item.classList.remove("active");
+                });
+                this.classList.add("active");
+                
+                // Set the dropdown value
+                problemSelect.value = symptom.name;
+            });
+            symptomGrid.appendChild(symptomItem);
+            
+            // Add to dropdown
+            const option = document.createElement("option");
+            option.value = symptom.name;
+            option.textContent = symptom.name;
+            problemSelect.appendChild(option);
+        });
+    }
+
+    // Login function
+    function login() {
+        let user = document.getElementById("username").value.trim();
+        let pass = document.getElementById("password").value.trim();
+        let error = document.getElementById("loginError");
+
+        if (user === "user" && pass === "1234") {
+            localStorage.setItem("loggedInUser", user);
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("mainApp").style.display = "block";
+            loadUserData();
+            showNotification("Login successful!");
+        } else {
+            error.style.display = "block";
+        }
+    }
+
+    // Logout function
+    function logout() {
+        localStorage.removeItem("loggedInUser");
+        document.getElementById("mainApp").style.display = "none";
+        document.getElementById("loginPage").style.display = "flex";
+        showNotification("Logged out successfully");
+    }
+
+    // Load user data
+    function loadUserData() {
+        // In a real app, this would fetch user-specific data
+        console.log("Loading user data...");
+    }
+
+    // Get suggestion function
+    function getSuggestion() {
+        let symptom = document.getElementById("problemSelect").value;
+        let output = document.getElementById("result");
+        let loader = document.getElementById("loader");
+
+        if (symptom === "") {
+            output.innerHTML = "<p style='color:var(--danger);'><b>Please select a symptom!</b></p>";
+            return;
+        }
+
+        // Show loading animation
+        loader.style.display = "block";
+        output.innerHTML = "";
+
+        // Simulate API call delay
+        setTimeout(() => {
+            loader.style.display = "none";
+            
+            let advice = suggestions[symptom] || {
+                advice: "এই সমস্যার জন্য ডাক্তারের পরামর্শ নিন।",
+                severity: "unknown",
+                selfCare: "পর্যাপ্ত বিশ্রাম নিন এবং স্বাস্থ্যকর জীবনযাপন করুন।",
+                whenToSeeDoctor: "যত তাড়াতাড়ি সম্ভব"
+            };
+
+            let severityColor = "var(--success)";
+            if (advice.severity === "moderate") severityColor = "var(--primary)";
+            if (advice.severity === "severe") severityColor = "var(--danger)";
+
+            output.innerHTML = `
+                <h3>Problem: ${symptom}</h3>
+                <div style="display: flex; align-items: center; margin: 10px 0;">
+                    <div style="width: 12px; height: 12px; border-radius: 50%; background: ${severityColor}; margin-right: 10px;"></div>
+                    <span>Severity: <b>${advice.severity}</b></span>
+                </div>
+                <p><b>Immediate Advice:</b> ${advice.advice}</p>
+                <p><b>Self-care Tips:</b> ${advice.selfCare}</p>
+                <p><b>When to see a doctor:</b> ${advice.whenToSeeDoctor}</p>
+            `;
+
+            // Save to history
+            saveToHistory(symptom, advice.advice);
+        }, 1500);
+    }
+
+    // Save consultation to history
+    function saveToHistory(symptom, advice) {
+        let history = JSON.parse(localStorage.getItem("consultationHistory")) || [];
+        
+        const consultation = {
+            id: Date.now(),
+            date: new Date().toLocaleString(),
+            symptom: symptom,
+            advice: advice
+        };
+        
+        history.unshift(consultation); // Add to beginning
+        
+        // Keep only last 10 items
+        if (history.length > 10) {
+            history = history.slice(0, 10);
+        }
+        
+        localStorage.setItem("consultationHistory", JSON.stringify(history));
+        loadHistory();
+    }
+
+    // Load consultation history
+    function loadHistory() {
+        const historyList = document.getElementById("historyList");
+        const history = JSON.parse(localStorage.getItem("consultationHistory")) || [];
+        
+        if (history.length === 0) {
+            historyList.innerHTML = "<p>No consultation history yet.</p>";
+            return;
+        }
+        
+        historyList.innerHTML = "";
+        history.forEach(item => {
+            const historyItem = document.createElement("div");
+            historyItem.className = "history-item";
+            historyItem.innerHTML = `
+                <div class="history-date">${item.date}</div>
+                <div><b>${item.symptom}</b></div>
+                <div style="font-size: 0.9rem; margin-top: 5px;">${item.advice.substring(0, 80)}...</div>
+            `;
+            historyList.appendChild(historyItem);
+        });
+    }
+
+    // Clear history
+    function clearHistory() {
+        if (confirm("Are you sure you want to clear your consultation history?")) {
+            localStorage.removeItem("consultationHistory");
+            loadHistory();
+            showNotification("History cleared");
+        }
+    }
+
+    // Show notification
+    function showNotification(message) {
+        const notification = document.getElementById("notification");
+        notification.textContent = message;
+        notification.style.display = "block";
+        
+        setTimeout(() => {
+            notification.style.display = "none";
+        }, 3000);
+    }
+</script>
+</body>
+</html>
